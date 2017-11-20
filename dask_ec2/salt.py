@@ -175,7 +175,7 @@ def install_salt_master(cluster):
 
     @retry(retries=3, wait=0)
     def __install_salt_rest_api():
-        cmd = "pip install cherrypy"
+        cmd = "pip install cherrypy==3.2.3"
         ret = master.exec_command(cmd, sudo=True)
         if ret["exit_code"] != 0:
             raise Exception(ret["stderr"].decode('utf-8'))
