@@ -150,7 +150,7 @@ def install_salt_master(cluster):
 
     @retry(retries=3, wait=0)
     def __apt_installs():
-        cmd = "apt-get install -y python-pip libssl-dev libffi-dev python-dev"
+        cmd = "apt-get install -y python-pip libssl-dev libffi-dev python-dev" #added =9.0.1
         ret = master.exec_command(cmd, sudo=True)
         if ret["exit_code"] != 0:
             raise Exception(ret["stderr"].decode('utf-8'))
@@ -161,9 +161,23 @@ def install_salt_master(cluster):
         raise DaskEc2Exception("%s\nCouldn't install ubuntu dependencies. Error is above (maybe try again)" %
                                e.last_exception)
 
+
     @retry(retries=3, wait=0)
     def __upgrade_pip():
-        cmd = "pip install --upgrade pip packaging appdirs six"
+        cmd = "pip install --upgrade pip==9.0.1 packaging appdirs six" #removed pip from upgrade list replace with #pip install pip==9.0.1
+        ret = master.exec_command(cmd, sudo=True)
+        if ret["exit_code"] != 0:
+            raise Exception(ret["stderr"])
+
+    try:
+        __upgrade_pip()
+    except RetriesExceededException as e:
+        raise DaskEc2Exception("%s\nCouldn't upgrade pip. Error is above (maybe try again)" % e.last_exception)
+
+
+    @retry(retries=3, wait=0)
+    def __upgrade_pip():
+        cmd = "pip install --upgrade packaging appdirs six" #removed pip from upgrade list
         ret = master.exec_command(cmd, sudo=True)
         if ret["exit_code"] != 0:
             raise Exception(ret["stderr"])

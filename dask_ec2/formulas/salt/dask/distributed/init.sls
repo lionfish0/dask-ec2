@@ -42,6 +42,13 @@ pip_deps:
     - bin_env: {{ install_prefix }}/bin/pip
 
 
+
+  pkg.installed:
+    - pkgs:
+      - python3-pip
+      - python-pip
+    - reload_modules: true
+
 {% if source_install %}
 # install dask (above) to get dependencies then install from git
 source-dask-install:
@@ -50,6 +57,7 @@ source-dask-install:
     - bin_env: {{ install_prefix }}/bin/pip
     - require:
       - sls: conda
+    
 
 source-distributed-install:
   pip.installed:
@@ -57,6 +65,7 @@ source-distributed-install:
     - bin_env: {{ install_prefix }}/bin/pip
     - require:
       - sls: conda
+
 
 {% endif %}
 
@@ -79,6 +88,7 @@ update-dask-glm:
     - bin_env: {{ install_prefix }}/bin/pip
     - require:
       - sls: conda
+  
 
 correct_perms:
   file.directory:
